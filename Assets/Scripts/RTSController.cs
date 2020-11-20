@@ -6,6 +6,8 @@ using CodeMonkey.Utils;
 public class RTSController : MonoBehaviour
 {
     private Vector3 startPosition;
+    private Vector3 nextPositionLeft;
+    private Vector3 nextPositionRight;
     private List<RTSUnit> selectedRTSUnitList;
 
     private void Awake()
@@ -42,6 +44,23 @@ public class RTSController : MonoBehaviour
                 }
             }
             Debug.Log(selectedRTSUnitList.Count);
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            nextPositionLeft = UtilsClass.GetMouseWorldPosition();
+            
+        }
+        if (Input.GetMouseButtonUp(1))
+        {
+            nextPositionRight = UtilsClass.GetMouseWorldPosition();
+            if (selectedRTSUnitList.Count == 1)
+            {
+                selectedRTSUnitList[0].PathTo(nextPositionLeft);
+            }
+            if (selectedRTSUnitList.Count > 1)
+            {
+                
+            }
         }
     }
 }
