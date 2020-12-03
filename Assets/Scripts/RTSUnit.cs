@@ -12,6 +12,7 @@ public class RTSUnit : MonoBehaviour
     private float RotationAngle = 0;
     private bool Moving;
     private bool Rotating;
+    public Unit UnitObject;
     private void Awake()
     {
         selectedGameObject = transform.Find("selected").gameObject;
@@ -41,6 +42,10 @@ public class RTSUnit : MonoBehaviour
                 Moving = false;
             }
         }
+    }
+    public void SetUnit(Unit unit)
+    {
+        UnitObject = unit;
     }
     public void SetSelectedVisible(bool visible)
     {

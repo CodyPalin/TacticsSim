@@ -9,24 +9,32 @@ public class RTSController : MonoBehaviour
     private Vector3 nextPositionLeft;
     private Vector3 nextPositionRight;
     private List<RTSUnit> selectedRTSUnitList;
+    private GameObject SelectionBox;
+    private bool mousedown;
 
     private void Awake()
     {
         selectedRTSUnitList = new List<RTSUnit>();
+        SelectionBox = GameObject.Find("SelectionBox");
+        SelectionBox.SetActive(false);
     }
     private void Update()
     {
+        Vector3 currentPosition = UtilsClass.GetMouseWorldPosition();
+        //LMB
         if (Input.GetMouseButtonDown(0))
         {
             //Left mouse Button press
             startPosition = UtilsClass.GetMouseWorldPosition();
+            mousedown = true;
         }
         if (Input.GetMouseButtonUp(0))
         {
             //left Mouse Button Released
-         
-            Collider2D[] collider2DArray = Physics2D.OverlapAreaAll(startPosition, UtilsClass.GetMouseWorldPosition());
-          
+            mousedown = false;
+            //make selection box disappear
+            SelectionBox.SetActive(false);
+            Collider2D[] collider2DArray = Physics2D.OverlapAreaAll(startPosition, currentPosition);
             foreach(RTSUnit RTSunit in selectedRTSUnitList)
             {
                 RTSunit.SetSelectedVisible(false);
@@ -45,13 +53,22 @@ public class RTSController : MonoBehaviour
             }
             Debug.Log(selectedRTSUnitList.Count);
         }
+        //if lmb held down
+        if (mousedown && startPosition != currentPosition)
+        {
+            DrawSelectionBox(startPosition, currentPosition);
+        }
+
+        //RMB
         if (Input.GetMouseButtonDown(1))
         {
+            //right Mouse Button press
             nextPositionLeft = UtilsClass.GetMouseWorldPosition();
             
         }
         if (Input.GetMouseButtonUp(1))
         {
+            //right Mouse Button Released
             nextPositionRight = UtilsClass.GetMouseWorldPosition();
             if (selectedRTSUnitList.Count == 1)
             {
@@ -62,5 +79,15 @@ public class RTSController : MonoBehaviour
                 
             }
         }
+    }
+    private void DrawSelectionBox(Vector3 boxStart, Vector3 boxEnd)
+    {
+        Debug.Log("Selecting");
+        SelectionBox.SetActive(true);
+        Vector3 middle = (boxStart + boxEnd) / 2f;
+        float sizeX = Mathf.Abs(boxEnd.x - boxStart.x);
+        float sizeY = Mathf.Abs(boxEnd.y - boxStart.y);
+        SelectionBox.GetComponent<RectTransform>().position = middle;
+        SelectionBox.GetComponent<RectTransform>().sizeDelta = new Vector2(sizeX, sizeY);
     }
 }
