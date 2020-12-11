@@ -10,11 +10,13 @@ public class Unit
     public int Attack { get; private set; }
     public int RangedAttack { get; private set; }
     public int Defense { get; private set; }
+    public int Armor { get; private set; }
     public int Speed { get; private set; }
     public int Range { get; private set; }
     public int MaxStrength { get; private set; }
     public int CurrentStrength { get; private set; }
-    public Unit(int attack, int rangedAttack, int defense, int speed, int range, int strength)
+    Random rand;
+    public Unit(int attack, int rangedAttack, int defense,int armor, int speed, int range, int strength)
     {
         Attack = attack;
         RangedAttack = rangedAttack;
@@ -23,9 +25,17 @@ public class Unit
         Range = range;
         MaxStrength = strength;
         CurrentStrength = strength;
+        Armor = armor;
+        rand = new Random();
     }
-    public bool Damage(int damageAmount)
+    public bool Damage(int damageValue)
     {
+        int ArmorEffectivenessVariant = rand.Next(-10, 10);
+        int ArmorEffect = Armor + ArmorEffectivenessVariant;
+        if (ArmorEffect < 0) ArmorEffect = 0;
+        int damageAmount = (int)(damageValue-((double)ArmorEffect/100)*damageValue);
+        if (damageAmount <= 0)
+            return true;
         if (CurrentStrength <= damageAmount)
         {
             CurrentStrength = 0;
@@ -43,6 +53,7 @@ public class Unit
         retval += "\nAttack:" + Attack;
         retval += "\nRangedAttack:" + RangedAttack;
         retval += "\nDefense:" + Defense;
+        retval += "\nArmor:" + Armor;
         retval += "\nSpeed:" + Speed;
         retval += "\nRange:" + Range;
         retval += "\nStrength:" + CurrentStrength+"/"+MaxStrength;

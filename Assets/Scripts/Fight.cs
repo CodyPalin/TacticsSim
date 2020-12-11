@@ -7,10 +7,14 @@ using System.Threading.Tasks;
 
 public class Fight
 {
-    public int terrain = 0; 
-    public Fight(int terrain = 0) //will add other things here, terrain and elevation and such will have an effect on the fight.
+    public double AttackModifier = 0;
+    public double DefenseModifier = 0;
+    public double Attack;
+    public double Defense;
+    public Fight(double attackmod = 1, double defensemod = 1) //will add other things here, terrain and elevation and such will have an effect on the fight.
     {
-        this.terrain = terrain;
+        AttackModifier = attackmod;
+        DefenseModifier = defensemod;
     }
     /// <summary>
     /// 
@@ -20,12 +24,25 @@ public class Fight
     /// <returns> true if fight is over, false otherwise</returns>
     public bool Tick (ref Unit Attacker, ref Unit Defender)
     {
-        int AttackerDamage = (int)(Defender.Defense * (Defender.StrengthPercentage()*1/Attacker.StrengthPercentage()));
-        int DefenderDamage = (int)(Attacker.Attack * (Attacker.StrengthPercentage() * 1 / Defender.StrengthPercentage()));
-        Attacker.Damage(AttackerDamage);
-        Defender.Damage(DefenderDamage);
+        double attackEffectiveness = (100-(Math.Pow((100-Attacker.StrengthPercentage()*100)/46.45, 6)))/100;
+        double defenseEffectiveness = (100 - (Math.Pow((100 - Defender.StrengthPercentage() * 100) / 46.45, 6))) / 100;
+        Attack = CalcAttack(Attacker.Attack,attackEffectiveness);
+        Defense = CalcDefense(Attacker.Defense, defenseEffectiveness);
+        int DefenderDamageDealt = (int)(Defense*(100.0/(100+Attack)));
+        int AttackerDamageDealt = (int)(Attack*(100.0/(100+Defense)));
+        Attacker.Damage(DefenderDamageDealt);
+        Defender.Damage(AttackerDamageDealt);
         if (Attacker.CurrentStrength == 0 || Defender.CurrentStrength == 0)
             return true;
         return false;
+    }
+
+    private double CalcAttack(int attack,double effectiveness)
+    {
+        return AttackModifier * attack * effectiveness;
+    }
+    private double CalcDefense(int defense, double effectiveness)
+    {
+        return DefenseModifier * defense * effectiveness;
     }
 }

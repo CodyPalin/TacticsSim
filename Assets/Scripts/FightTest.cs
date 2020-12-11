@@ -9,8 +9,9 @@ class FightTest
 {
     static void Main(string[] args)
     {
-        Unit a = new Unit(4, 0, 3, 2, 0, 100);
-        Unit b = new Unit(4, 0, 3, 2, 0, 100);
+        Unit a = new Unit(20, 0, 8, 25, 6, 0, 60);
+        Unit b = new Unit(6, 15, 6, 8, 4, 10, 100);
+        //Unit infantry = new Unit(12, 0, 10, 20, 3, 0, 100);
         Fight fight1 = new Fight();
         string exitstring = "";
         while (exitstring!="exit" )
@@ -25,10 +26,14 @@ class FightTest
                 if (a.IsDestroyed())
                 {
                     Console.WriteLine("Defender wins!");
+                    Console.ReadLine();
+                    return;
                 }
                 else
                 {
                     Console.WriteLine("Attacker wins!");
+                    Console.ReadLine();
+                    return;
                 }
             }
             exitstring = Console.ReadLine();
